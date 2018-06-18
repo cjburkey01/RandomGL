@@ -2,13 +2,24 @@
 <!DOCTYPE xml>
 <Configuration status="INFO">
 	<Appenders>
-		<Console name="console" target="SYSTEM_OUT">
-			<PatternLayout pattern="[%d{HH:mm:ss}] [%level] [%t] %msg%n" />
-		</Console>
+        <Console name="console_out" target="SYSTEM_OUT">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%level] [%t] %msg%n" />
+        </Console>
+        <Console name="console_warn_err_fatal" target="SYSTEM_ERR">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%level] [%t] %msg%n" />
+        </Console>
 	</Appenders>
 	<Loggers>
-		<Root level="debug" additivity="false">
-			<AppenderRef ref="console" />
-		</Root>
+        <Root level="trace" additivity="false">
+            <AppenderRef ref="console_warn_err_fatal" />
+            <AppenderRef ref="console_out" />
+        </Root>
 	</Loggers>
 </Configuration>
