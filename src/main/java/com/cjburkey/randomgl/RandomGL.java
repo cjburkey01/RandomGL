@@ -1,10 +1,6 @@
 package com.cjburkey.randomgl;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
 
 /**
  * MAKE SURE TO RUN WITH THE "-XstartOnFirstThread" JVM option
@@ -13,10 +9,10 @@ public final class RandomGL {
     
     public final String[] args;
     
-    private long window;
     private boolean running = false;
     private float deltaTime = 0.0f;
     
+    private Window window;
     private ShaderProgram testShader;
     
     private RandomGL(String[] args) {
@@ -27,39 +23,8 @@ public final class RandomGL {
         // Set default exception handling
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Debug.exception(e));
         
-        // Initialize GLFW
-        if (!glfwInit()) {
-            throw new RuntimeException("Failed to initialize GLFW");
-        }
-        Debug.info("Initialized GLFW");
-        
-        // Initialize window values
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // Use up-to-date features of OpenGL only
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);          // Allow newer versions of OpenGL
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);                  // Require OpenGL 3.3
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);                      // Make window resizable
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);                       // Make window hidden by default
-        Debug.info("Initialized window values");
-        
-        // Create the window of size 300x300 (300 is just a random number, the size will be changed next) on the primary monitor
-        window = glfwCreateWindow(300, 300, "RandomGL 0.0.1", NULL, NULL);
-        if (window == NULL) {
-            throw new RuntimeException("Failed to create GLFW window");
-        }
-        Debug.info("Created GLFW window");
-        
-        // Make this window the container for OpenGL
-        glfwMakeContextCurrent(window);
-        Debug.info("Made window context for OpenGL");
-        
-        // Initialize OpenGL and check version
-        GL.createCapabilities();
-        Debug.info("Initialized OpenGL {}", glGetString(GL_VERSION));
-        
-        // Enable VSync (set to 0 to disable)
-        glfwSwapInterval(1);
-        Debug.info("Enabled vsync");
+        // Initialize GLFW and OpenGL
+        window = new Window();
         
         // Initialize OpenGL shaders
         testShader = new ShaderTest();
@@ -70,36 +35,21 @@ public final class RandomGL {
         testShader.bind();
         Debug.info("Initialized test shader");
         
-        // Make window visible
-        glfwShowWindow(window);
-        Debug.info("Made window visibile");
-        
-        // Set window to half the size of the monitor
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        int monitorWidth = vidmode.width();
-        int monitorHeight = vidmode.height();
-        glfwSetWindowSize(window, monitorWidth / 2, monitorHeight / 2);
-        Debug.info("Set window size to half the monitor of {}x{}", monitorWidth, monitorHeight);
-        
-        // Center window on screen
-        int[] x = new int[1];
-        int[] y = new int[1];
-        glfwGetFramebufferSize(window, x, y);
-        int windowWidth = x[0];
-        int windowHeight = y[0];
-        glfwSetWindowPos(window, (monitorWidth - windowWidth) / 2, (monitorHeight - windowHeight) / 2);
-        Debug.info("Set window to middle of screen with size of {}x{}", windowWidth, windowHeight);
+        // Show the window
+        window.show();
+        window.setSizeHalfMonitor();
+        window.centerOnScreen();
         
         // Set the window background to a gray color
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-        
-        running = true;
         
         long tickStart = System.nanoTime();
         long lastTick = System.nanoTime();
         float timeSinceLastFPSCheck = 0.0f;
         Debug.info("Starting game loop");
-        // Begin the game loop and only end it if the game is no longer running
+        
+        // Begin the game loop and only end it if the game is no longer marked as running
+        running = true;
         while (running) {
             // Update delta time
             tickStart = System.nanoTime();
@@ -109,37 +59,55 @@ public final class RandomGL {
             // Show approximate FPS and delta time in window title every 10th of a second
             if (timeSinceLastFPSCheck >= 0.1f) {
                 timeSinceLastFPSCheck = 0.0f;
-                glfwSetWindowTitle(window, "RandomGL ||| Approximate Delta: " + Format.format4(deltaTime) + " | Estimated FPS: " + Format.format2(1.0f / deltaTime));
+                window.setTitle("RandomGL ||| Approximate Delta: " + Format.format4(deltaTime) + " | Estimated FPS: " + Format.format2(1.0f / deltaTime));
             }
             timeSinceLastFPSCheck += deltaTime;
             
-            // Check for input events
-            glfwPollEvents();
+            update();
             
-            // Clear the screen for the next render
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            
+            // Rendering
+            window.onPreRender();
             testShader.bind();
-            
-            // -- BEGIN DRAWING -- //
-            
-            // TODO: Drawing goes here
-            
-            // -- FINISH DRAWING -- //
-            
+            render();
             ShaderProgram.unbind();
             
+            // Show the next frame and put the current to the back buffer (will wait until the GPU is ready if vsync is enabled)
+            window.onPostRender();
+            
             // Check if the player tried to close the window, and if they did, exit the game
-            if (glfwWindowShouldClose(window)) {
+            if (window.getShouldClose()) {
                 running = false;
+                break;     // Skip the sleep timer, the game should close anyway
             }
             
-            // Show the next frame and put the current to the back buffer (will wait until the GPU is ready if vsync is enabled)
-            glfwSwapBuffers(window);
+            // If the FPS is over 100, then we will throttle the game a little to prevent damage to the GPU (sleep 2ms to be safe)
+            if (deltaTime < 1.0f / 100.0f) {
+                try {
+                    Thread.sleep(2);
+                } catch (Exception e) {
+                    Debug.exception(e);
+                }
+            }
         }
         
         // Exit the game
         Debug.info("Closing game");
+        exit();
+    }
+    
+    // Called once per frame; represents the "physical" side of the game, such as objects and such in the world
+    private void update() {
+        
+    }
+    
+    // Called once per frame; used to render meshes in the world
+    private void render() {
+        
+    }
+    
+    // Called when the game loop is no longer running
+    private void exit() {
+        
     }
     
     public static void main(String[] args) {

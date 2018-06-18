@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 public abstract class ShaderProgram {
     
+    private static ShaderProgram currentShader;
+    
     private boolean linked = false;
     private boolean deleted = false;
     private int program = 0;
@@ -175,11 +177,17 @@ public abstract class ShaderProgram {
             Debug.warn("Attempted to bind an unlinked shader program");
             return;
         }
+        currentShader = this;
         glUseProgram(program);
     }
     
     public static void unbind() {
+        // Unbinds any bound shader
         glUseProgram(0);
+    }
+    
+    public static ShaderProgram getCurrentShader() {
+        return currentShader;
     }
     
     private static boolean stringEmpty(String input) {
