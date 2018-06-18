@@ -1,0 +1,7 @@
+/target/
+*.DS_Store
+*__MACOSX
+.classpath
+.project
+.settings
+target
