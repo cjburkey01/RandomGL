@@ -44,12 +44,12 @@ public class Debug {
         while (exception.getCause() != null) {
             exception = exception.getCause();
         }
-        Debug.error(" --[ BEGIN ERROR ]--");
+        Debug.error(" --[ BEGIN EXCEPTION ]--");
         Debug.error("     An error occurred: {}", exception.getMessage());
         for (StackTraceElement stackTraceElement : exception.getStackTrace()) {
             Debug.error("       {}", stackTraceElement.toString());
         }
-        Debug.error(" --[  END  ERROR ]--");
+        Debug.error(" --[  END  EXCEPTION ]--");
     }
     
     private static String sanitize(Object data) {

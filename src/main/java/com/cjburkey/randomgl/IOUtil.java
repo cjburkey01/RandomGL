@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 
 public final class IOUtil {
     
-    public static String readFile(String fileName) {
+    // Reads an entire file to a string
+    public static String readFile(String fileName, boolean preserveNewLines) {
         // Make sure the file name is not null or empty
         if (fileName == null || (fileName = fileName.trim()).isEmpty()) {
             return null;
@@ -30,7 +31,9 @@ public final class IOUtil {
             // Keep reading lines until they don't exist anymore
             while ((line = reader.readLine()) != null) {
                 output.append(line);
-                output.append('\n');
+                if (preserveNewLines) {
+                    output.append('\n');
+                }
             }
             
             // Return the output if no errors occur
@@ -48,6 +51,10 @@ public final class IOUtil {
             }
         }
         return null;
+    }
+    
+    public static String readFile(String fileName) {
+        return readFile(fileName, true);
     }
     
 }

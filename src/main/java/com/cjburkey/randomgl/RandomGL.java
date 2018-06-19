@@ -3,7 +3,7 @@ package com.cjburkey.randomgl;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * MAKE SURE TO RUN WITH THE "-XstartOnFirstThread" JVM option
+ * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option</b>
  */
 public final class RandomGL {
     
@@ -14,6 +14,7 @@ public final class RandomGL {
     
     private Window window;
     private ShaderProgram testShader;
+    private Mesh testMesh;
     
     private RandomGL(String[] args) {
         this.args = args;
@@ -34,6 +35,17 @@ public final class RandomGL {
         }
         testShader.bind();
         Debug.info("Initialized test shader");
+        
+        testMesh = new Mesh(testShader);
+        testMesh.setMesh(new short[] {
+            0, 1, 2
+        }, new Object[] {
+            new float[] { 0.0f, 0.5f, 0.0f, },
+            new float[] { -0.5f, -0.5f, 0.0f, },
+            new float[] { 0.5f, -0.5f, 0.0f, },
+        });
+        
+        Debug.info("Initialized test mesh");
         
         // Show the window
         window.show();
@@ -67,6 +79,7 @@ public final class RandomGL {
             
             // Rendering
             window.onPreRender();
+            
             testShader.bind();
             render();
             ShaderProgram.unbind();
@@ -102,7 +115,7 @@ public final class RandomGL {
     
     // Called once per frame; used to render meshes in the world
     private void render() {
-        
+        testMesh.render();
     }
     
     // Called when the game loop is no longer running

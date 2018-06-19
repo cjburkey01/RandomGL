@@ -28,6 +28,7 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);                      // Make window resizable
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);                       // Make window hidden by default
+        glfwWindowHint(GLFW_SAMPLES, 4);                                // Multisampling
         Debug.info("Initialized window values");
         
         // Create the window of size 300x300 (300 is just a random number, the size will be changed next) on the primary monitor

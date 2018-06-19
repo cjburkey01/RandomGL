@@ -1,9 +1,12 @@
 package com.cjburkey.randomgl;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class ShaderProgram {
     
@@ -14,6 +17,7 @@ public abstract class ShaderProgram {
     private int program = 0;
     private final Map<Integer, Integer> shaders = new HashMap<>();
     private final Map<String, Integer> uniforms = new HashMap<>();
+    private final Set<Attribute> attributes = new TreeSet<>();
     
     protected ShaderProgram() {
         // Generate the program with OpenGL
@@ -23,10 +27,13 @@ public abstract class ShaderProgram {
         }
         
         onAddShaders();
+        addAttribute(0, GL_FLOAT, 3);   // Position attribute
+        onAddAttributes();
         onRegisterUniforms();
     }
     
     protected abstract void onAddShaders();
+    protected abstract void onAddAttributes();
     protected abstract void onRegisterUniforms();
     
     protected final boolean addShader(int type, String source) {
@@ -162,6 +169,28 @@ public abstract class ShaderProgram {
             return;
         }
         glUniform1f(loc, value);
+    }
+    
+    protected boolean addAttribute(int location, int type, int count) {
+        return attributes.add(new Attribute(location, type, count));
+    }
+    
+    protected boolean removeAttribute(int location) {
+        for (Attribute attribute : attributes) {
+            if (attribute.location == location) {
+                attributes.remove(attribute);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Attribute[] getAttributes() {
+        return attributes.toArray(new Attribute[attributes.size()]);
+    }
+    
+    public int getAttributeCount() {
+        return attributes.size();
     }
     
     public final boolean getIsLinked() {
