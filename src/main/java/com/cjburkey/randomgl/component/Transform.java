@@ -13,6 +13,16 @@ public class Transform extends Component {
     
     private final Matrix4f modelMatrix = new Matrix4f().identity();
     
+    public Vector3f transformDirection(Vector3f dir, boolean normalize) {
+        Matrix4f inv = rotation.get(new Matrix4f()).invert();
+        Vector3f vec = inv.transformDirection(new Vector3f(dir));
+        return (normalize) ? vec.normalize() : vec;
+    }
+    
+    public Vector3f transformDirection(Vector3f dir) {
+        return transformDirection(dir, true);
+    }
+    
     public Matrix4f getModelMatrix() {
         return modelMatrix.identity().translate(position).rotate(rotation).scale(scale);
     }

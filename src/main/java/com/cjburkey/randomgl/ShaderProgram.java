@@ -25,13 +25,15 @@ public abstract class ShaderProgram {
     private final Map<Integer, Integer> shaders = new HashMap<>();
     private final Map<String, Integer> uniforms = new HashMap<>();
     private final Set<Attribute> attributes = new TreeSet<>();
+    public final boolean transforms;
     
-    protected ShaderProgram() {
+    public ShaderProgram(boolean transforms) {
         // Generate the program with OpenGL
         program = glCreateProgram();
         if (program == 0) {
             throw new RuntimeException("Failed to create a shader program");
         }
+        this.transforms = transforms;
         
         onAddShaders();
         addAttribute(0, GL_FLOAT, 3);   // Position attribute
@@ -41,13 +43,23 @@ public abstract class ShaderProgram {
             throw new RuntimeException("Failed to link shader");
         }
         
+        if (transforms) {
+            registerTransformationUniforms();
+        }
         onRegisterUniforms();
     }
     
     protected abstract void onAddShaders();
     protected abstract void onAddAttributes();
     protected abstract void onRegisterUniforms();
-    public abstract void setRenderUniforms(Transform transform);
+    protected abstract void onSetRenderUniforms(Transform transform);
+    
+    public final void setRenderUniforms(Transform transform) {
+        if (transforms) {
+            setTransformationUniforms(transform);
+        }
+        onSetRenderUniforms(transform);
+    }
     
     protected final boolean addShader(int type, String source) {
         // Shaders cannot be added once the program has been linked
@@ -77,6 +89,16 @@ public abstract class ShaderProgram {
         
         // Add the shaders to the map to prevent duplicates
         shaders.put(type, shader);
+        return true;
+    }
+    
+    protected final boolean addVertAndFragShaders(String path) {
+        if (!addShader(GL_VERTEX_SHADER, IOUtil.readFile(path + ".vsh"))) {
+            return false;
+        }
+        if (!addShader(GL_FRAGMENT_SHADER, IOUtil.readFile(path + ".fsh"))) {
+            return false;
+        }
         return true;
     }
     
