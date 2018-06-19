@@ -108,4 +108,52 @@ public final class Mesh {
         glDeleteVertexArrays(vao);
     }
     
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((buffers == null) ? 0 : buffers.hashCode());
+        result = prime * result + ebo;
+        result = prime * result + indices;
+        result = prime * result + ((shader == null) ? 0 : shader.hashCode());
+        result = prime * result + vao;
+        return result;
+    }
+    
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Mesh other = (Mesh) obj;
+        if (buffers == null) {
+            if (other.buffers != null) {
+                return false;
+            }
+        } else if (!buffers.equals(other.buffers)) {
+            return false;
+        }
+        if (ebo != other.ebo) {
+            return false;
+        }
+        if (indices != other.indices) {
+            return false;
+        }
+        if (shader == null) {
+            if (other.shader != null) {
+                return false;
+            }
+        } else if (!shader.equals(other.shader)) {
+            return false;
+        }
+        if (vao != other.vao) {
+            return false;
+        }
+        return true;
+    }
+    
 }

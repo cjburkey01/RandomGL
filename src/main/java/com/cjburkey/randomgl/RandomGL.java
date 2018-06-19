@@ -1,6 +1,9 @@
 package com.cjburkey.randomgl;
 
 import static org.lwjgl.opengl.GL11.*;
+import com.cjburkey.randomgl.component.MeshFilter;
+import com.cjburkey.randomgl.object.GameObject;
+import com.cjburkey.randomgl.object.Scene;
 
 /**
  * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option</b>
@@ -14,6 +17,7 @@ public final class RandomGL {
     
     private Window window;
     private ShaderProgram testShader;
+    private Scene testScene;
     private Mesh testMesh;
     
     private RandomGL(String[] args) {
@@ -36,6 +40,11 @@ public final class RandomGL {
         testShader.bind();
         Debug.info("Initialized test shader");
         
+        // Create a test scene
+        testScene = new Scene();
+        Debug.info("Initialized test scene");
+        
+        // Create a test mesh
         testMesh = new Mesh(testShader);
         testMesh.setMesh(new short[] {
             0, 1, 2
@@ -44,8 +53,14 @@ public final class RandomGL {
             new float[] { -0.5f, -0.5f, 0.0f, },
             new float[] { 0.5f, -0.5f, 0.0f, },
         });
-        
         Debug.info("Initialized test mesh");
+        
+        // Create a test object
+        GameObject testObject = testScene.createObject();
+        MeshFilter filter = new MeshFilter();
+        filter.setMesh(testMesh);
+        testObject.addComponent(filter);
+        Debug.info("Initialized test object");
         
         // Show the window
         window.show();
@@ -110,12 +125,12 @@ public final class RandomGL {
     
     // Called once per frame; represents the "physical" side of the game, such as objects and such in the world
     private void update() {
-        
+        testScene.onUpdate();
     }
     
     // Called once per frame; used to render meshes in the world
     private void render() {
-        testMesh.render();
+        testScene.onRender();
     }
     
     // Called when the game loop is no longer running

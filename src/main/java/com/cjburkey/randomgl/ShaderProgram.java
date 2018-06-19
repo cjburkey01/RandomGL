@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public abstract class ShaderProgram {
     
@@ -134,6 +139,7 @@ public abstract class ShaderProgram {
         int loc = -1;
         if (!uniforms.containsKey(name)) {
             // Get the location of the uniform in the shader(s)
+            bind();
             loc = glGetUniformLocation(program, name);
             if (loc >= 0) {
                 uniforms.put(name, loc);
@@ -160,6 +166,7 @@ public abstract class ShaderProgram {
         if (loc < 0) {
             return;
         }
+        bind();
         glUniform1i(loc, value);
     }
     
@@ -168,21 +175,84 @@ public abstract class ShaderProgram {
         if (loc < 0) {
             return;
         }
+        bind();
         glUniform1f(loc, value);
     }
     
+    public final void setUniform(String name, Vector2f value) {
+        int loc = getUniformLocation(name);
+        if (loc < 0) {
+            return;
+        }
+        bind();
+        glUniform2f(loc, value.x, value.y);
+    }
+    
+    public final void setUniform(String name, Vector3f value) {
+        int loc = getUniformLocation(name);
+        if (loc < 0) {
+            return;
+        }
+        bind();
+        glUniform3f(loc, value.x, value.y, value.z);
+    }
+    
+    public final void setUniform(String name, Vector4f value) {
+        int loc = getUniformLocation(name);
+        if (loc < 0) {
+            return;
+        }
+        bind();
+        glUniform4f(loc, value.x, value.y, value.z, value.w);
+    }
+    
+    public final void setUniform(String name, Matrix3f value) {
+        int loc = getUniformLocation(name);
+        if (loc < 0) {
+            return;
+        }
+        bind();
+        glUniformMatrix3fv(loc, false, value.get(new float[9]));
+    }
+    
+    public final void setUniform(String name, Matrix4f value) {
+        int loc = getUniformLocation(name);
+        if (loc < 0) {
+            return;
+        }
+        bind();
+        glUniformMatrix4fv(loc, false, value.get(new float[16]));
+    }
+    
+    protected final void registerTransformationUniforms() {
+        registerUniform("projectionMatrix");
+        registerUniform("viewMatrix");
+        registerUniform("modelMatrix");
+    }
+    
     protected boolean addAttribute(int location, int type, int count) {
+        if (getAttribute(location) != null) {
+            return false;
+        }
         return attributes.add(new Attribute(location, type, count));
     }
     
     protected boolean removeAttribute(int location) {
+        Attribute at = getAttribute(location);
+        if (at == null) {
+            return false;
+        }
+        attributes.remove(at);
+        return true;
+    }
+    
+    public Attribute getAttribute(int location) {
         for (Attribute attribute : attributes) {
             if (attribute.location == location) {
-                attributes.remove(attribute);
-                return true;
+                return attribute;
             }
         }
-        return false;
+        return null;
     }
     
     public Attribute[] getAttributes() {
@@ -221,6 +291,62 @@ public abstract class ShaderProgram {
     
     private static boolean stringEmpty(String input) {
         return (input == null || input.trim().isEmpty());
+    }
+    
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+        result = prime * result + (deleted ? 1231 : 1237);
+        result = prime * result + (linked ? 1231 : 1237);
+        result = prime * result + program;
+        result = prime * result + ((shaders == null) ? 0 : shaders.hashCode());
+        result = prime * result + ((uniforms == null) ? 0 : uniforms.hashCode());
+        return result;
+    }
+    
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ShaderProgram other = (ShaderProgram) obj;
+        if (attributes == null) {
+            if (other.attributes != null) {
+                return false;
+            }
+        } else if (!attributes.equals(other.attributes)) {
+            return false;
+        }
+        if (deleted != other.deleted) {
+            return false;
+        }
+        if (linked != other.linked) {
+            return false;
+        }
+        if (program != other.program) {
+            return false;
+        }
+        if (shaders == null) {
+            if (other.shaders != null) {
+                return false;
+            }
+        } else if (!shaders.equals(other.shaders)) {
+            return false;
+        }
+        if (uniforms == null) {
+            if (other.uniforms != null) {
+                return false;
+            }
+        } else if (!uniforms.equals(other.uniforms)) {
+            return false;
+        }
+        return true;
     }
     
 }

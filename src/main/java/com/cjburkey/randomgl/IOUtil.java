@@ -40,6 +40,7 @@ public final class IOUtil {
             return output.toString();
         } catch (Exception e) {
             Debug.error("Failed to read file: {}", fileName);
+            Debug.exception(e);
         } finally {
             // Cleanup the reader
             try {
@@ -48,6 +49,7 @@ public final class IOUtil {
                 }
             } catch (Exception e1) {
                 Debug.error("Failed to close reader for file: {}", fileName);
+                Debug.exception(e1);
             }
         }
         return null;

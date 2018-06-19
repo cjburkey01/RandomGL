@@ -13,6 +13,7 @@ public class ShaderTest extends ShaderProgram {
     }
     
     protected void onRegisterUniforms() {
+        registerTransformationUniforms();
     }
     
 }
