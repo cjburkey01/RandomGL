@@ -8,6 +8,7 @@ import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import com.cjburkey.randomgl.event.GameHandler;
+import com.cjburkey.randomgl.input.Input;
 
 public class Window {
     
@@ -19,6 +20,7 @@ public class Window {
     private final Vector2f previousMouse = new Vector2f().zero();
     private final Vector2f deltaMouse = new Vector2f().zero();
     private final Vector2f currentMouse = new Vector2f().zero();
+    private boolean firstMove = true;
     
     public Window() {
         // Initialize GLFW
@@ -34,7 +36,7 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);                      // Make window resizable
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);                       // Make window hidden by default
-        glfwWindowHint(GLFW_SAMPLES, 16);                               // Multisampling
+        glfwWindowHint(GLFW_SAMPLES, 0);                                // Multisampling
         Debug.info("Initialized window values");
         
         // Create the window of size 300x300 (300 is just a random number, the size will be changed next) on the primary monitor
@@ -76,7 +78,12 @@ public class Window {
         // Make sure the game is updated when the cursor moves
         glfwSetCursorPosCallback(window, (win, x, y) -> {
             currentMouse.set((float) x, (float) y);
+            if (firstMove) {
+                firstMove = false;
+                previousMouse.set(currentMouse);
+            }
             currentMouse.sub(previousMouse, deltaMouse);
+            previousMouse.set(currentMouse);
             
             GameHandler.getInstance().call((e) -> e.onMouseMove(currentMouse.x, currentMouse.y, deltaMouse.x, deltaMouse.y));
         });
@@ -101,6 +108,10 @@ public class Window {
         // Clear the frame for the next render
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        deltaMouse.set(0.0f);
+        
+        Input._update();
+        
         // Check for input from the player
         glfwPollEvents();
     }
@@ -108,6 +119,10 @@ public class Window {
     public void onPostRender() {
         // Switch to the next frame
         glfwSwapBuffers(window);
+    }
+    
+    public void setCursorLocked(boolean locked) {
+        glfwSetInputMode(window, GLFW_CURSOR, (locked) ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
     
     public void setSizeHalfMonitor() {
@@ -170,6 +185,10 @@ public class Window {
         // When any number more than "1", that many frames will be finished before a render with vsync
         // For example, if the frequency of a card is 60GHz(U.S. default), then a value of "1" would mean 60fps, and "2" would mean 30fps, "3" would mean 20fps, etc
         glfwSwapInterval((enabled) ? 1 : 0);
+    }
+    
+    public Vector2f getMouseDelta() {
+        return new Vector2f(deltaMouse);
     }
     
     public static Vector2i getMonitorSize(long monitor) {

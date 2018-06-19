@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.joml.Vector2f;
 import com.cjburkey.randomgl.Pair;
+import com.cjburkey.randomgl.RandomGL;
 import com.cjburkey.randomgl.event.GameEventHandler;
 import com.cjburkey.randomgl.event.GameHandler;
 
@@ -14,9 +16,11 @@ public class InputEventHandler implements GameEventHandler {
     private static InputEventHandler instance;
     
     private final Map<Integer, List<Pair<Float, InputControl>>> inputs = new HashMap<>();
+    private final Vector2f mousePos = new Vector2f().zero();
     
     public InputEventHandler() {
         instance = this;
+        Input._init();
         GameHandler.getInstance().addEventHandler(instance);
     }
     
@@ -37,6 +41,7 @@ public class InputEventHandler implements GameEventHandler {
     }
     
     public void onMouseMove(float x, float y, float deltaX, float deltaY) {
+        mousePos.set(x, y);
     }
     
     public void addKeyControl(int keyCode, InputControl inputControl, float weight) {
@@ -69,6 +74,14 @@ public class InputEventHandler implements GameEventHandler {
         for (Pair<Float, InputControl> control : controls) {
             control.b.addAmount(control.a * direction);
         }
+    }
+    
+    public Vector2f getMousePos() {
+        return new Vector2f(mousePos);
+    }
+    
+    public Vector2f getMouseDelta() {
+        return RandomGL.getWindow().getMouseDelta();
     }
     
     public static InputEventHandler getInstance() {

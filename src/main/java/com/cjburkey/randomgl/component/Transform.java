@@ -14,9 +14,12 @@ public class Transform extends Component {
     private final Matrix4f modelMatrix = new Matrix4f().identity();
     
     public Vector3f transformDirection(Vector3f dir, boolean normalize) {
-        Matrix4f inv = rotation.get(new Matrix4f()).invert();
+        if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f) {
+            dir.normalize();
+        }
+        Matrix4f inv = rotation.get(new Matrix4f());
         Vector3f vec = inv.transformDirection(new Vector3f(dir));
-        return (normalize) ? vec.normalize() : vec;
+        return (normalize && (vec.x != 0.0f || vec.y != 0.0f || vec.z != 0.0f)) ? vec.normalize() : vec;
     }
     
     public Vector3f transformDirection(Vector3f dir) {

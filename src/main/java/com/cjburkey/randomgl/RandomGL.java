@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import com.cjburkey.randomgl.component.Camera;
 import com.cjburkey.randomgl.component.FreeFly;
 import com.cjburkey.randomgl.component.MeshFilter;
-import com.cjburkey.randomgl.input.Input;
+import com.cjburkey.randomgl.component.MouseLook;
 import com.cjburkey.randomgl.input.InputEventHandler;
 import com.cjburkey.randomgl.object.GameObject;
 import com.cjburkey.randomgl.object.Scene;
@@ -29,9 +29,7 @@ public final class RandomGL {
     
     private RandomGL(String[] args) {
         this.args = args;
-        
         new InputEventHandler();
-        Input.init();
     }
     
     private void start() {
@@ -64,6 +62,7 @@ public final class RandomGL {
         GameObject testCamera = testScene.createObject();
         testCamera.addComponent(new Camera());
         testCamera.addComponent(new FreeFly());
+        testCamera.addComponent(new MouseLook());
         Debug.info("Initialized test camera");
         
         // Create a test object
@@ -155,6 +154,10 @@ public final class RandomGL {
     
     public static float getDeltaTime() {
         return instance.deltaTime;
+    }
+    
+    public static Window getWindow() {
+        return instance.window;
     }
     
     public static void main(String[] args) {
