@@ -1,5 +1,6 @@
 package com.cjburkey.randomgl.component;
 
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import com.cjburkey.randomgl.object.Component;
@@ -9,6 +10,12 @@ public class Transform extends Component {
     public final Vector3f position = new Vector3f().zero();
     public final Quaternionf rotation = new Quaternionf().identity();
     public final Vector3f scale = new Vector3f(1.0f, 1.0f, 1.0f);
+    
+    private final Matrix4f modelMatrix = new Matrix4f().identity();
+    
+    public Matrix4f getModelMatrix() {
+        return modelMatrix.identity().translate(position).rotate(rotation).scale(scale);
+    }
     
     public int hashCode() {
         final int prime = 31;

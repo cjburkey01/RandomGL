@@ -12,6 +12,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import com.cjburkey.randomgl.component.Camera;
+import com.cjburkey.randomgl.component.Transform;
 
 public abstract class ShaderProgram {
     
@@ -34,12 +36,18 @@ public abstract class ShaderProgram {
         onAddShaders();
         addAttribute(0, GL_FLOAT, 3);   // Position attribute
         onAddAttributes();
+        
+        if (!link()) {
+            throw new RuntimeException("Failed to link shader");
+        }
+        
         onRegisterUniforms();
     }
     
     protected abstract void onAddShaders();
     protected abstract void onAddAttributes();
     protected abstract void onRegisterUniforms();
+    public abstract void setRenderUniforms(Transform transform);
     
     protected final boolean addShader(int type, String source) {
         // Shaders cannot be added once the program has been linked
@@ -218,6 +226,7 @@ public abstract class ShaderProgram {
     public final void setUniform(String name, Matrix4f value) {
         int loc = getUniformLocation(name);
         if (loc < 0) {
+            Debug.warn("Uniform not found: {}", name);
             return;
         }
         bind();
@@ -228,6 +237,12 @@ public abstract class ShaderProgram {
         registerUniform("projectionMatrix");
         registerUniform("viewMatrix");
         registerUniform("modelMatrix");
+    }
+    
+    protected final void setTransformationUniforms(Transform transform) {
+        setUniform("projectionMatrix", Camera.getMainCamera().getProjectionMatrix());
+        setUniform("viewMatrix", Camera.getMainCamera().getViewMatrix());
+        setUniform("modelMatrix", transform.getModelMatrix());
     }
     
     protected boolean addAttribute(int location, int type, int count) {

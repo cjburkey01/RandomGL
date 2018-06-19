@@ -6,6 +6,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import com.cjburkey.randomgl.component.Camera;
 
 public class Window {
     
@@ -44,6 +45,7 @@ public class Window {
             
             // OpenGL must be notified about the window size change, too
             glViewport(0, 0, w, h);
+            Camera.getMainCamera().setWindowSize(size);
         });
         
         // Make sure that the "position" variable is updated when the window is moved
@@ -85,6 +87,7 @@ public class Window {
     }
     
     public void setSize(Vector2i size) {
+        this.size.set(size);
         glfwSetWindowSize(window, size.x, size.y);
     }
     

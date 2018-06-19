@@ -15,6 +15,7 @@ public final class MeshFilter extends Component {
     public void onRender() {
         if (getHasMesh()) {
             mesh.shader.bind();
+            mesh.shader.setRenderUniforms(parent.transform);
             renderMesh();
             ShaderProgram.unbind();
         }

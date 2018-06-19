@@ -1,6 +1,7 @@
 package com.cjburkey.randomgl;
 
 import static org.lwjgl.opengl.GL20.*;
+import com.cjburkey.randomgl.component.Transform;
 
 public class ShaderTest extends ShaderProgram {
     
@@ -14,6 +15,10 @@ public class ShaderTest extends ShaderProgram {
     
     protected void onRegisterUniforms() {
         registerTransformationUniforms();
+    }
+    
+    public void setRenderUniforms(Transform transform) {
+        setTransformationUniforms(transform);
     }
     
 }
