@@ -3,9 +3,10 @@ package com.cjburkey.randomgl.object;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 import java.util.UUID;
 import com.cjburkey.randomgl.Debug;
 import com.cjburkey.randomgl.component.Transform;
@@ -17,8 +18,8 @@ public final class GameObject {
     private String name = "";
     
     private List<Component> components = new ArrayList<>();
-    private Stack<Component> componentsToAdd = new Stack<>();
-    private Stack<Component> componentsToRemove = new Stack<>();
+    private Queue<Component> componentsToAdd = new LinkedList<>();
+    private Queue<Component> componentsToRemove = new LinkedList<>();
     
     public GameObject(UUID uuid) {
         transform = new Transform();
@@ -45,14 +46,14 @@ public final class GameObject {
     
     private void updateComponents() {
         while (!componentsToRemove.isEmpty()) {
-            Component component = componentsToRemove.pop();
+            Component component = componentsToRemove.poll();
             if (component != null) {
                 component.onRemove();
                 components.remove(component);
             }
         }
         while (!componentsToAdd.isEmpty()) {
-            Component component = componentsToAdd.pop();
+            Component component = componentsToAdd.poll();
             if (component != null) {
                 components.add(component);
                 setFields(component);
@@ -82,7 +83,7 @@ public final class GameObject {
         componentsToAdd.clear();
         componentsToRemove.clear();
         for (Component component : components) {
-            componentsToRemove.push(component);
+            componentsToRemove.offer(component);
         }
         updateComponents();
     }
@@ -91,7 +92,7 @@ public final class GameObject {
         if (getComponent(component.getClass()) != null) {
             return false;
         }
-        componentsToAdd.push(component);
+        componentsToAdd.offer(component);
         return true;
     }
     
@@ -100,7 +101,7 @@ public final class GameObject {
         if (comp == null) {
             return false;
         }
-        componentsToRemove.push(comp);
+        componentsToRemove.offer(comp);
         return true;
     }
     

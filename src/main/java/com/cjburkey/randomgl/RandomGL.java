@@ -2,7 +2,10 @@ package com.cjburkey.randomgl;
 
 import static org.lwjgl.opengl.GL11.*;
 import com.cjburkey.randomgl.component.Camera;
+import com.cjburkey.randomgl.component.FreeFly;
 import com.cjburkey.randomgl.component.MeshFilter;
+import com.cjburkey.randomgl.input.Input;
+import com.cjburkey.randomgl.input.InputEventHandler;
 import com.cjburkey.randomgl.object.GameObject;
 import com.cjburkey.randomgl.object.Scene;
 
@@ -10,6 +13,8 @@ import com.cjburkey.randomgl.object.Scene;
  * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option</b>
  */
 public final class RandomGL {
+    
+    private static RandomGL instance;
     
     public final String[] args;
     
@@ -20,9 +25,13 @@ public final class RandomGL {
     private ShaderProgram testShader;
     private Scene testScene;
     private Mesh testMesh;
+    private GameObject testObject;
     
     private RandomGL(String[] args) {
         this.args = args;
+        
+        new InputEventHandler();
+        Input.init();
     }
     
     private void start() {
@@ -54,20 +63,22 @@ public final class RandomGL {
         
         GameObject testCamera = testScene.createObject();
         testCamera.addComponent(new Camera());
+        testCamera.addComponent(new FreeFly());
         Debug.info("Initialized test camera");
         
         // Create a test object
-        GameObject testObject = testScene.createObject();
+        testObject = testScene.createObject();
         MeshFilter filter = new MeshFilter();
         filter.setMesh(testMesh);
         testObject.addComponent(filter);
-        testObject.transform.position.z -= 1.0f;
+        testObject.transform.position.z = -2.0f;
         Debug.info("Initialized test object");
         
         // Show the window
         window.show();
         window.setSizeHalfMonitor();
         window.centerOnScreen();
+        window.setVsync(true);
         
         Camera.getMainCamera().setWindowSize(window.getSize());
         
@@ -88,9 +99,9 @@ public final class RandomGL {
             lastTick = tickStart;
             
             // Show approximate FPS and delta time in window title every 45th of a second
-            if (timeSinceLastFPSCheck >= 1.0f / 45.0f) {
+            if (timeSinceLastFPSCheck >= 1.0f / 30.0f) {
                 timeSinceLastFPSCheck = 0.0f;
-                window.setTitle("RandomGL ||| Approximate Delta: " + Format.format4(deltaTime) + " | Approximate FPS: " + Format.format2(1.0f / deltaTime));
+                window.setTitle("RandomGL ||| Frame time: " + (Format.format2(deltaTime * 1000.0f)) + "ms | Approximate FPS: " + Format.format2(1.0f / deltaTime));
             }
             timeSinceLastFPSCheck += deltaTime;
             
@@ -112,10 +123,10 @@ public final class RandomGL {
                 break;     // Skip the sleep timer, the game should close anyway
             }
             
-            // If the FPS is over 100, then we will throttle the game a little to prevent overusage of the GPU (sleep 2ms to be safe)
-            if (deltaTime < 1.0f / 100.0f) {
+            // If the FPS is over 120, then we will throttle the game a little to prevent overusage of the GPU
+            while (((System.nanoTime() - tickStart) / 1000000000.0d) < 1.0f / 120.0f) {
                 try {
-                    Thread.sleep(2);
+                    Thread.sleep(1);
                 } catch (Exception e) {
                     Debug.exception(e);
                 }
@@ -142,8 +153,13 @@ public final class RandomGL {
         
     }
     
+    public static float getDeltaTime() {
+        return instance.deltaTime;
+    }
+    
     public static void main(String[] args) {
-        new RandomGL(args).start();
+        instance = new RandomGL(args);
+        instance.start();
     }
     
 }

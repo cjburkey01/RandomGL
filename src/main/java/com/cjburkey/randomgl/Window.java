@@ -3,10 +3,11 @@ package com.cjburkey.randomgl;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import com.cjburkey.randomgl.component.Camera;
+import com.cjburkey.randomgl.event.GameHandler;
 
 public class Window {
     
@@ -14,6 +15,10 @@ public class Window {
     private String title;
     private final Vector2i size = new Vector2i().zero();
     private final Vector2i position = new Vector2i().zero();
+    
+    private final Vector2f previousMouse = new Vector2f().zero();
+    private final Vector2f deltaMouse = new Vector2f().zero();
+    private final Vector2f currentMouse = new Vector2f().zero();
     
     public Window() {
         // Initialize GLFW
@@ -29,7 +34,7 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);                      // Make window resizable
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);                       // Make window hidden by default
-        glfwWindowHint(GLFW_SAMPLES, 4);                                // Multisampling
+        glfwWindowHint(GLFW_SAMPLES, 16);                               // Multisampling
         Debug.info("Initialized window values");
         
         // Create the window of size 300x300 (300 is just a random number, the size will be changed next) on the primary monitor
@@ -39,13 +44,41 @@ public class Window {
         }
         Debug.info("Created GLFW window");
         
-        // Make sure that the "size" variable is updated when the window is resized
+        // Make sure that the game is updated when the window is resized
         glfwSetFramebufferSizeCallback(window, (win, w, h) -> {
             size.set(w, h);
+            GameHandler.getInstance().call((e) -> e.onWindowResize(w, h));
+        });
+        
+        // Make sure the game is updated when a key is pressed, released, or repeated
+        glfwSetKeyCallback(window, (win, key, scan, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                GameHandler.getInstance().call((e) -> e.onKeyPress(key));
+            }
+            if (action == GLFW_RELEASE) {
+                GameHandler.getInstance().call((e) -> e.onKeyRelease(key));
+            }
+            if (action == GLFW_REPEAT) {
+                GameHandler.getInstance().call((e) -> e.onKeyRepeat(key));
+            }
+        });
+        
+        // Make sure the game is updated when a mouse button is pressed or released
+        glfwSetMouseButtonCallback(window, (win, button, action, mods) -> {
+            if (action == GLFW_PRESS) {
+                GameHandler.getInstance().call((e) -> e.onMousePress(button));
+            }
+            if (action == GLFW_PRESS) {
+                GameHandler.getInstance().call((e) -> e.onMouseRelease(button));
+            }
+        });
+        
+        // Make sure the game is updated when the cursor moves
+        glfwSetCursorPosCallback(window, (win, x, y) -> {
+            currentMouse.set((float) x, (float) y);
+            currentMouse.sub(previousMouse, deltaMouse);
             
-            // OpenGL must be notified about the window size change, too
-            glViewport(0, 0, w, h);
-            Camera.getMainCamera().setWindowSize(size);
+            GameHandler.getInstance().call((e) -> e.onMouseMove(currentMouse.x, currentMouse.y, deltaMouse.x, deltaMouse.y));
         });
         
         // Make sure that the "position" variable is updated when the window is moved
@@ -57,6 +90,8 @@ public class Window {
         
         // Initialize OpenGL and check version
         GL.createCapabilities();
+        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_CULL_FACE);
         Debug.info("Initialized OpenGL {}", glGetString(GL_VERSION));
         
         setVsync(true);

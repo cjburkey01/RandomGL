@@ -2,7 +2,7 @@ package com.cjburkey.randomgl.object;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
+import java.util.Queue;
 import java.util.UUID;
 
 public class Scene {
@@ -10,8 +10,8 @@ public class Scene {
     private static Scene activeScene;
     
     private final List<GameObject> objects = new LinkedList<>();
-    private Stack<GameObject> objectsToAdd = new Stack<>();
-    private Stack<GameObject> objectsToRemove = new Stack<>();
+    private Queue<GameObject> objectsToAdd = new LinkedList<>();
+    private Queue<GameObject> objectsToRemove = new LinkedList<>();
     
     public Scene() {
         if (activeScene == null) {
@@ -21,7 +21,7 @@ public class Scene {
     
     public GameObject createObject() {
         GameObject object = new GameObject(UUID.randomUUID());
-        objectsToAdd.add(object);
+        objectsToAdd.offer(object);
         return object;
     }
     
@@ -36,20 +36,20 @@ public class Scene {
     
     public void destroy(GameObject object) {
         if (objects.contains(object)) {
-            objectsToRemove.push(object);
+            objectsToRemove.offer(object);
         }
     }
     
     private void updateObjects() {
         while (!objectsToRemove.isEmpty()) {
-            GameObject object = objectsToRemove.pop();
+            GameObject object = objectsToRemove.poll();
             if (object != null) {
                 object.onDestroy();
                 objects.remove(object);
             }
         }
         while (!objectsToAdd.isEmpty()) {
-            GameObject object = objectsToAdd.pop();
+            GameObject object = objectsToAdd.poll();
             if (object != null) {
                 objects.add(object);
                 object.onCreate();

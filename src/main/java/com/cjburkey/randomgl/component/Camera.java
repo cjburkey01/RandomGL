@@ -1,13 +1,16 @@
 package com.cjburkey.randomgl.component;
 
+import static org.lwjgl.opengl.GL11.*;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
+import com.cjburkey.randomgl.event.GameEventHandler;
+import com.cjburkey.randomgl.event.GameHandler;
 import com.cjburkey.randomgl.object.Component;
 
-public class Camera extends Component {
+public class Camera extends Component implements GameEventHandler {
     
     private static Camera mainCamera;
     
@@ -28,6 +31,8 @@ public class Camera extends Component {
         setNearPlane(0.01f);
         setFarPlane(1000.0f);
         setWindowSize(new Vector2i(10, 10));
+        
+        GameHandler.getInstance().addEventHandler(this);
     }
     
     public void setFov(float fovDegrees) {
@@ -45,9 +50,20 @@ public class Camera extends Component {
         hasProjectionUpdated = true;
     }
     
+    public void setWindowSize(int w, int h) {
+        this.windowSize.set(w, h);
+        hasProjectionUpdated = true;
+    }
+    
     public void setWindowSize(Vector2i windowSize) {
         this.windowSize.set(windowSize);
         hasProjectionUpdated = true;
+    }
+    
+    public void onWindowResize(int w, int h) {
+        // OpenGL must be notified about the window size change, too
+        glViewport(0, 0, w, h);
+        setWindowSize(w, h);
     }
     
     public Matrix4f getProjectionMatrix() {
