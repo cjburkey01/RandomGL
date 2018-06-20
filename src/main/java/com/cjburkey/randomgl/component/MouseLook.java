@@ -47,8 +47,9 @@ public class MouseLook extends Component implements GameEventHandler {
         
         input.zero().set(Input.getMouseDelta()).negate();
         input.mul(sensitivityX, sensitivityY);
-        rotationChange.set(Math.max(-xLimit, Math.min(xLimit, input.y)), input.x, 0.0f);
+        rotationChange.set(input.y, input.x, 0.0f);
         rotation = MathUtil.smoothDamp(rotation, rotation.add(rotationChange, new Vector3f()), rotXVel, rotYVel, rotZVel, smoothing, 999, RandomGL.getDeltaTime());
+        rotation.x = Math.max(-xLimit, Math.min(xLimit, rotation.x));
         
         parent.transform.rotation.identity().rotateY(rotation.y * DEG_RAD).rotateX(rotation.x * DEG_RAD);
     }

@@ -37,6 +37,7 @@ public abstract class ShaderProgram {
         
         onAddShaders();
         addAttribute(0, GL_FLOAT, 3);   // Position attribute
+        addAttribute(1, GL_FLOAT, 3);   // Normal attribute
         onAddAttributes();
         
         if (!link()) {

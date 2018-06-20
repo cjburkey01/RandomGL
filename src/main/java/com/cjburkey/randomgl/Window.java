@@ -36,7 +36,7 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);                      // Make window resizable
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);                       // Make window hidden by default
-        glfwWindowHint(GLFW_SAMPLES, 0);                                // Multisampling
+        glfwWindowHint(GLFW_SAMPLES, 16);                               // Multisampling
         Debug.info("Initialized window values");
         
         // Create the window of size 300x300 (300 is just a random number, the size will be changed next) on the primary monitor
@@ -98,7 +98,7 @@ public class Window {
         // Initialize OpenGL and check version
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
         Debug.info("Initialized OpenGL {}", glGetString(GL_VERSION));
         
         setVsync(true);

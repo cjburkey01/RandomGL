@@ -10,7 +10,7 @@ import com.cjburkey.randomgl.object.GameObject;
 import com.cjburkey.randomgl.object.Scene;
 
 /**
- * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option</b>
+ * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option (especially on Mac)</b>
  */
 public final class RandomGL {
     
@@ -51,11 +51,49 @@ public final class RandomGL {
         // Create a test mesh
         testMesh = new Mesh(testShader);
         testMesh.setMesh(new short[] {
-            0, 1, 2
-        }, new Object[] {
-            new float[] { 0.0f, 0.5f, 0.0f, },
-            new float[] { -0.5f, -0.5f, 0.0f, },
-            new float[] { 0.5f, -0.5f, 0.0f, },
+            // Back
+            5, 2, 1,
+            6, 2, 5,
+            
+            // Front
+            0, 3, 4,
+            3, 7, 4,
+            
+            // Right
+            3, 2, 7,
+            7, 2, 6,
+            
+            // Left
+            4, 1, 0,
+            4, 5, 1,
+            
+            // Top
+            7, 5, 4,
+            6, 5, 7,
+            
+            // Bottom
+            1, 2, 3,
+            1, 3, 0,
+        }, new float[][] {
+            // Positions of vertices
+            new float[] { -0.5f, -0.5f, 0.5f, },    // 0
+            new float[] { -0.5f, -0.5f, -0.5f, },   // 1
+            new float[] { 0.5f, -0.5f, -0.5f, },    // 2
+            new float[] { 0.5f, -0.5f, 0.5f, },     // 3
+            new float[] { -0.5f, 0.5f, 0.5f, },     // 4
+            new float[] { -0.5f, 0.5f, -0.5f, },    // 5
+            new float[] { 0.5f, 0.5f, -0.5f, },     // 6
+            new float[] { 0.5f, 0.5f, 0.5f, },      // 7
+        }, new float[][] {
+            // Normals of vertices
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
+            new float[] { 0.0f, 0.0f, 0.0f, },
         });
         Debug.info("Initialized test mesh");
         
