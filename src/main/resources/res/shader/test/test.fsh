@@ -1,15 +1,20 @@
 #version 330 core
 
 in vec3 vertexPos;
+in vec2 uvs;
 
 out vec4 fragColor;
 
+uniform sampler2D tex;
+
 // All this to outline a cube...what am I doing with my life?
 void main() {
-    vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+    //vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+    vec4 color = texture(tex, uvs);
+    //color = vec4(1.0, 1.0, 1.0, 1.0);
     
     // This is equal to double the width of the outlines
-    float epsilona = 0.1;
+    float epsilona = 10.0 / 64.0;
     
     // The smaller that this number is, the less likely that there are gaps, but the GPU may interpret it as 0 and break
     float epsilonb = (epsilona / 2) + 0.000001;

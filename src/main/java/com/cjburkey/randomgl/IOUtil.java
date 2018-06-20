@@ -1,14 +1,14 @@
 package com.cjburkey.randomgl;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
 public final class IOUtil {
     
-    // Reads an entire file to a string
-    public static String readFile(String fileName, boolean preserveNewLines) {
-        // Make sure the file name is not null or empty
+    public static InputStream getInputStream(String fileName) {
+     // Make sure the file name is not null or empty
         if (fileName == null || (fileName = fileName.trim()).isEmpty()) {
             return null;
         }
@@ -20,11 +20,16 @@ public final class IOUtil {
         }
         fileName = "/" + fileName;
         
+        return IOUtil.class.getResourceAsStream(fileName);
+    }
+    
+    // Reads an entire file to a string
+    public static String readFile(String fileName, boolean preserveNewLines) {
         // Read the file
         BufferedReader reader = null;
         try {
             // Initialize the reader
-            reader = new BufferedReader(new InputStreamReader(RandomGL.class.getResourceAsStream(fileName)));
+            reader = new BufferedReader(new InputStreamReader(getInputStream(fileName)));
             StringBuilder output = new StringBuilder();
             String line = "";
             
