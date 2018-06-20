@@ -4,12 +4,11 @@ in vec3 vertexPos;
 
 out vec4 fragColor;
 
+// All this to outline a cube...what am I doing with my life?
 void main() {
     vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
     
-    // All this to outline a cube...what am I doing with my life?
-    
-    // This is double the width of the outlines
+    // This is equal to double the width of the outlines
     float epsilona = 0.1;
     
     // The smaller that this number is, the less likely that there are gaps, but the GPU may interpret it as 0 and break
@@ -32,5 +31,7 @@ void main() {
     if (doX || doY || doZ) {
         color = color * 0.75;
     }
+    
+    // Apply the color
     fragColor = color;
 }
