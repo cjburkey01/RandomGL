@@ -5,7 +5,7 @@ import com.cjburkey.randomgl.RandomGL;
 import com.cjburkey.randomgl.input.Input;
 import com.cjburkey.randomgl.object.Component;
 
-public class FreeFly extends Component {
+public final class FreeFly extends Component {
     
     private Vector3f delta = new Vector3f().zero();
     

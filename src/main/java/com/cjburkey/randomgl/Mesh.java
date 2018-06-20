@@ -8,6 +8,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.cjburkey.randomgl.shader.ShaderProgram;
+import com.cjburkey.randomgl.util.Debug;
 
 public final class Mesh {
     

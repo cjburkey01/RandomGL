@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import com.cjburkey.randomgl.Debug;
 import com.cjburkey.randomgl.component.Transform;
+import com.cjburkey.randomgl.util.Debug;
 
 public final class GameObject {
     

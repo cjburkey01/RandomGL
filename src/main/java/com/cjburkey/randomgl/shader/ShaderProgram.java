@@ -1,4 +1,4 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.shader;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -12,8 +12,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import com.cjburkey.randomgl.Attribute;
 import com.cjburkey.randomgl.component.Camera;
 import com.cjburkey.randomgl.component.Transform;
+import com.cjburkey.randomgl.util.Debug;
+import com.cjburkey.randomgl.util.IOUtil;
 
 public abstract class ShaderProgram {
     
@@ -53,13 +56,13 @@ public abstract class ShaderProgram {
     protected abstract void onAddShaders();
     protected abstract void onAddAttributes();
     protected abstract void onRegisterUniforms();
-    protected abstract void onSetRenderUniforms(Transform transform);
+    protected abstract void onSetRenderUniforms(Transform object);
     
-    public final void setRenderUniforms(Transform transform) {
+    public final void setRenderUniforms(Transform object) {
         if (transforms) {
-            setTransformationUniforms(transform);
+            setTransformationUniforms(object);
         }
-        onSetRenderUniforms(transform);
+        onSetRenderUniforms(object);
     }
     
     protected final boolean addShader(int type, String source) {

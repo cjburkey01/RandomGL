@@ -10,7 +10,7 @@ import com.cjburkey.randomgl.event.GameEventHandler;
 import com.cjburkey.randomgl.event.GameHandler;
 import com.cjburkey.randomgl.object.Component;
 
-public class Camera extends Component implements GameEventHandler {
+public final class Camera extends Component implements GameEventHandler {
     
     private static Camera mainCamera;
     

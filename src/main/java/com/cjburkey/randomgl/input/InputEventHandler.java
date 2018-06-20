@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.joml.Vector2f;
-import com.cjburkey.randomgl.Pair;
 import com.cjburkey.randomgl.RandomGL;
 import com.cjburkey.randomgl.event.GameEventHandler;
 import com.cjburkey.randomgl.event.GameHandler;
+import com.cjburkey.randomgl.util.Pair;
 
-public class InputEventHandler implements GameEventHandler {
+public final class InputEventHandler implements GameEventHandler {
     
     public static final int mouseButtonOffset = 0xFFFFFF;
     private static InputEventHandler instance;

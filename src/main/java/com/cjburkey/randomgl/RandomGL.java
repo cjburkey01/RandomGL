@@ -8,6 +8,10 @@ import com.cjburkey.randomgl.component.MouseLook;
 import com.cjburkey.randomgl.input.InputEventHandler;
 import com.cjburkey.randomgl.object.GameObject;
 import com.cjburkey.randomgl.object.Scene;
+import com.cjburkey.randomgl.shader.ShaderProgram;
+import com.cjburkey.randomgl.shader.ShaderTest;
+import com.cjburkey.randomgl.util.Debug;
+import com.cjburkey.randomgl.util.Format;
 
 /**
  * <b>MAKE SURE TO RUN WITH THE <code>-XstartOnFirstThread</code> JVM option (especially on Mac)</b>
@@ -51,83 +55,7 @@ public final class RandomGL {
         
         // Create a test mesh
         testMesh = new Mesh(testShader);
-        testMesh.setMesh(new short[] {
-            2, 1, 0,
-            2, 0, 3,
-        }, new float[][] {
-            // Vertices
-            new float[] { 0.5f, 0.5f, 0.0f, },
-            new float[] { 0.5f, -0.5f, 0.0f, },
-            new float[] { -0.5f, -0.5f, 0.0f, },
-            new float[] { -0.5f, 0.5f, 0.0f, },
-        }, new float[][] {
-            // Normals
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-        }, new float[][] {
-            // UVs
-            new float[] { 1.0f, 0.0f, },
-            new float[] { 1.0f, 1.0f, },
-            new float[] { 0.0f, 1.0f, },
-            new float[] { 0.0f, 0.0f, },
-        });
-//        testMesh.setMesh(new short[] {
-//            // Back
-//            5, 2, 1,
-//            6, 2, 5,
-//            
-//            // Front
-//            0, 3, 4,
-//            3, 7, 4,
-//            
-//            // Right
-//            3, 2, 7,
-//            7, 2, 6,
-//            
-//            // Left
-//            4, 1, 0,
-//            4, 5, 1,
-//            
-//            // Top
-//            7, 5, 4,
-//            6, 5, 7,
-//            
-//            // Bottom
-//            1, 2, 3,
-//            1, 3, 0,
-//        }, new float[][] {
-//            // Positions of vertices
-//            new float[] { -0.5f, -0.5f, 0.5f, },    // 0
-//            new float[] { -0.5f, -0.5f, -0.5f, },   // 1
-//            new float[] { 0.5f, -0.5f, -0.5f, },    // 2
-//            new float[] { 0.5f, -0.5f, 0.5f, },     // 3
-//            new float[] { -0.5f, 0.5f, 0.5f, },     // 4
-//            new float[] { -0.5f, 0.5f, -0.5f, },    // 5
-//            new float[] { 0.5f, 0.5f, -0.5f, },     // 6
-//            new float[] { 0.5f, 0.5f, 0.5f, },      // 7
-//        }, new float[][] {
-//            // Normals of vertices
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//        }, new float[][] {
-//            // UVs of vertices
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//        });
+        setMesh();
         Debug.info("Initialized test mesh");
         
         GameObject testCamera = testScene.createObject();
@@ -227,6 +155,86 @@ public final class RandomGL {
     // Called when the game loop is no longer running
     private void exit() {
         
+    }
+    
+    private void setMesh() {
+        testMesh.setMesh(new short[] {
+            2, 1, 0,
+            2, 0, 3,
+        }, new float[][] {
+            // Vertices
+            new float[] { 0.5f, 0.5f, 0.0f, },
+            new float[] { 0.5f, -0.5f, 0.0f, },
+            new float[] { -0.5f, -0.5f, 0.0f, },
+            new float[] { -0.5f, 0.5f, 0.0f, },
+        }, new float[][] {
+            // Normals
+            new float[] { 0.0f, 0.0f, -1.0f },
+            new float[] { 0.0f, 0.0f, -1.0f },
+            new float[] { 0.0f, 0.0f, -1.0f },
+            new float[] { 0.0f, 0.0f, -1.0f },
+        }, new float[][] {
+            // UVs
+            new float[] { 1.0f, 0.0f, },
+            new float[] { 1.0f, 1.0f, },
+            new float[] { 0.0f, 1.0f, },
+            new float[] { 0.0f, 0.0f, },
+        });
+//        testMesh.setMesh(new short[] {
+//            // Back
+//            5, 2, 1,
+//            6, 2, 5,
+//            
+//            // Front
+//            0, 3, 4,
+//            3, 7, 4,
+//            
+//            // Right
+//            3, 2, 7,
+//            7, 2, 6,
+//            
+//            // Left
+//            4, 1, 0,
+//            4, 5, 1,
+//            
+//            // Top
+//            7, 5, 4,
+//            6, 5, 7,
+//            
+//            // Bottom
+//            1, 2, 3,
+//            1, 3, 0,
+//        }, new float[][] {
+//            // Positions of vertices
+//            new float[] { -0.5f, -0.5f, 0.5f, },    // 0
+//            new float[] { -0.5f, -0.5f, -0.5f, },   // 1
+//            new float[] { 0.5f, -0.5f, -0.5f, },    // 2
+//            new float[] { 0.5f, -0.5f, 0.5f, },     // 3
+//            new float[] { -0.5f, 0.5f, 0.5f, },     // 4
+//            new float[] { -0.5f, 0.5f, -0.5f, },    // 5
+//            new float[] { 0.5f, 0.5f, -0.5f, },     // 6
+//            new float[] { 0.5f, 0.5f, 0.5f, },      // 7
+//        }, new float[][] {
+//            // Normals of vertices
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, 0.0f, },
+//        }, new float[][] {
+//            // UVs of vertices
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//            new float[] { 0.0f, 0.0f, },
+//        });
     }
     
     public static float getDeltaTime() {

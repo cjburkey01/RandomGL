@@ -1,4 +1,4 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.util;
 
 public final class Format {
     

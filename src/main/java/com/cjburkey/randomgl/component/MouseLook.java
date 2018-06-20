@@ -2,15 +2,15 @@ package com.cjburkey.randomgl.component;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import com.cjburkey.randomgl.MathUtil;
 import com.cjburkey.randomgl.RandomGL;
-import com.cjburkey.randomgl.Vector1f;
 import com.cjburkey.randomgl.event.GameEventHandler;
 import com.cjburkey.randomgl.event.GameHandler;
 import com.cjburkey.randomgl.input.Input;
 import com.cjburkey.randomgl.object.Component;
+import com.cjburkey.randomgl.util.Container;
+import com.cjburkey.randomgl.util.MathUtil;
 
-public class MouseLook extends Component implements GameEventHandler {
+public final class MouseLook extends Component implements GameEventHandler {
     
     public static final float DEG_RAD = (float) Math.PI / 180.0f;
     
@@ -23,9 +23,9 @@ public class MouseLook extends Component implements GameEventHandler {
     private Vector2f input = new Vector2f().zero();
     private Vector3f rotationChange = new Vector3f().zero();
     private Vector3f rotation = new Vector3f().zero();
-    private Vector1f rotXVel = new Vector1f();
-    private Vector1f rotYVel = new Vector1f();
-    private Vector1f rotZVel = new Vector1f();
+    private Container<Float> rotXVel = new Container<Float>();
+    private Container<Float> rotYVel = new Container<Float>();
+    private Container<Float> rotZVel = new Container<Float>();
     private boolean lockLast = false;
     
     public MouseLook() {

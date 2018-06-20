@@ -9,8 +9,9 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import com.cjburkey.randomgl.event.GameHandler;
 import com.cjburkey.randomgl.input.Input;
+import com.cjburkey.randomgl.util.Debug;
 
-public class Window {
+public final class Window {
     
     private long window = NULL;
     private String title;

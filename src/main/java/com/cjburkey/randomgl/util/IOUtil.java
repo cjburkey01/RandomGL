@@ -1,4 +1,4 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.util;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

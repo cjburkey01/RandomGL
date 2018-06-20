@@ -1,9 +1,9 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Debug {
+public final class Debug {
     
     private static final Logger _logger = LogManager.getLogger("randomgl");
     

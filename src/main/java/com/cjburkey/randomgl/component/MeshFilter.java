@@ -1,8 +1,8 @@
 package com.cjburkey.randomgl.component;
 
 import com.cjburkey.randomgl.Mesh;
-import com.cjburkey.randomgl.ShaderProgram;
 import com.cjburkey.randomgl.object.Component;
+import com.cjburkey.randomgl.shader.ShaderProgram;
 
 public final class MeshFilter extends Component {
     

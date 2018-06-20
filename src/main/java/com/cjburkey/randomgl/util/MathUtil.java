@@ -1,11 +1,12 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.util;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class MathUtil {
+public final class MathUtil {
     
-    public static float smoothDamp(float current, float target, Vector1f currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
+    // Smoothdamp functions are from Unity (don't tell them we robbed them)
+    public static float smoothDamp(float current, float target, Container<Float> currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
         smoothTime = Float.max(0.0001f, smoothTime);
         float num = 2f / smoothTime;
         float num2 = num * deltaTime;
@@ -25,14 +26,14 @@ public class MathUtil {
         return num8;
     }
     
-    public static Vector2f smoothDamp(Vector2f current, Vector2f target, Vector1f currentVelocityX, Vector1f currentVelocityY, float smoothTime, float maxSpeed, float deltaTime) {
+    public static Vector2f smoothDamp(Vector2f current, Vector2f target, Container<Float> currentVelocityX, Container<Float> currentVelocityY, float smoothTime, float maxSpeed, float deltaTime) {
         Vector2f out = new Vector2f();
         out.x = smoothDamp(current.x, target.x, currentVelocityX, smoothTime, maxSpeed, deltaTime);
         out.y = smoothDamp(current.y, target.y, currentVelocityY, smoothTime, maxSpeed, deltaTime);
         return out;
     }
     
-    public static Vector3f smoothDamp(Vector3f current, Vector3f target, Vector1f currentVelocityX, Vector1f currentVelocityY, Vector1f currentVelocityZ, float smoothTime, float maxSpeed, float deltaTime) {
+    public static Vector3f smoothDamp(Vector3f current, Vector3f target, Container<Float> currentVelocityX, Container<Float> currentVelocityY, Container<Float> currentVelocityZ, float smoothTime, float maxSpeed, float deltaTime) {
         Vector3f out = new Vector3f();
         out.x = smoothDamp(current.x, target.x, currentVelocityX, smoothTime, maxSpeed, deltaTime);
         out.y = smoothDamp(current.y, target.y, currentVelocityY, smoothTime, maxSpeed, deltaTime);

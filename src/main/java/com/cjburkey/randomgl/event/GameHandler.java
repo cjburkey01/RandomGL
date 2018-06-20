@@ -3,7 +3,7 @@ package com.cjburkey.randomgl.event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameHandler {
+public final class GameHandler {
     
     private static GameHandler gameHandler = new GameHandler();
     

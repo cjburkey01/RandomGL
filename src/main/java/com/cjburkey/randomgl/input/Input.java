@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.joml.Vector2f;
-import com.cjburkey.randomgl.Debug;
+import com.cjburkey.randomgl.util.Debug;
 
 public final class Input {
     

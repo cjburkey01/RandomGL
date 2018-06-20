@@ -1,9 +1,8 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.shader;
 
-import static org.lwjgl.opengl.GL11.*;
 import com.cjburkey.randomgl.component.Transform;
 
-public class ShaderTest extends ShaderProgram {
+public final class ShaderTest extends ShaderTextured {
     
     public ShaderTest() {
         super(true);
@@ -14,15 +13,15 @@ public class ShaderTest extends ShaderProgram {
     }
     
     protected void onAddAttributes() {
-        addAttribute(2, GL_FLOAT, 2);
+        super.onAddAttributes();
     }
     
     protected void onRegisterUniforms() {
-        registerUniform("tex");
+        super.onRegisterUniforms();
     }
     
-    protected void onSetRenderUniforms(Transform transform) {
-        setUniform("tex", 0);
+    protected void onSetRenderUniforms(Transform object) {
+        super.onSetRenderUniforms(object);
     }
     
 }

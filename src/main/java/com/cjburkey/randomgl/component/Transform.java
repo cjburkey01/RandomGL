@@ -5,7 +5,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import com.cjburkey.randomgl.object.Component;
 
-public class Transform extends Component {
+public final class Transform extends Component {
     
     public final Vector3f position = new Vector3f().zero();
     public final Quaternionf rotation = new Quaternionf().identity();

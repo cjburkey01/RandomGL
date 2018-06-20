@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
-public class Scene {
+public final class Scene {
     
     private static Scene activeScene;
     

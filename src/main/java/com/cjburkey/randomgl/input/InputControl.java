@@ -1,6 +1,6 @@
 package com.cjburkey.randomgl.input;
 
-public class InputControl {
+public final class InputControl {
     
     private float amount;
     

@@ -1,6 +1,6 @@
-package com.cjburkey.randomgl;
+package com.cjburkey.randomgl.util;
 
-public class Pair<T, K> {
+public final class Pair<T, K> {
     
     public T a;
     public K b;

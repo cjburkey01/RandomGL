@@ -3,7 +3,7 @@ package com.cjburkey.randomgl;
 import static org.lwjgl.opengl.GL11.*;
 import java.nio.ByteBuffer;
 
-public class Attribute implements Comparable<Attribute> {
+public final class Attribute implements Comparable<Attribute> {
     
     public final int location;
     public final int type;
