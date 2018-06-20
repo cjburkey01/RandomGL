@@ -23,9 +23,9 @@ public final class MouseLook extends Component implements GameEventHandler {
     private Vector2f input = new Vector2f().zero();
     private Vector3f rotationChange = new Vector3f().zero();
     private Vector3f rotation = new Vector3f().zero();
-    private Container<Float> rotXVel = new Container<Float>();
-    private Container<Float> rotYVel = new Container<Float>();
-    private Container<Float> rotZVel = new Container<Float>();
+    private Container<Float> rotXVel = new Container<Float>(0.0f);
+    private Container<Float> rotYVel = new Container<Float>(0.0f);
+    private Container<Float> rotZVel = new Container<Float>(0.0f);
     private boolean lockLast = false;
     
     public MouseLook() {
@@ -34,6 +34,7 @@ public final class MouseLook extends Component implements GameEventHandler {
     
     public void onUpdate() {
         if (Input.controlDown("escape")) {
+            lockLast = lockCursor;
             lockCursor = !lockCursor;
         }
         if (lockCursor != lockLast) {
