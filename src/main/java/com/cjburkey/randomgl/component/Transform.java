@@ -27,7 +27,7 @@ public final class Transform extends Component {
     }
     
     public Matrix4f getModelMatrix() {
-        return modelMatrix.identity().translate(position).rotate(rotation).scale(scale);
+        return modelMatrix.identity().scale(scale).rotate(rotation).translate(position);
     }
     
     public int hashCode() {

@@ -9,8 +9,8 @@ import com.cjburkey.randomgl.util.Debug;
 
 public final class Input {
     
-    public static final Map<String, InputControl> inputs = new HashMap<>();
-    public static final Map<String, Boolean> controlsDown = new HashMap<>();
+    private static final Map<String, InputControl> inputs = new HashMap<>();
+    private static final Map<String, Boolean> controlsDown = new HashMap<>();
     
     public static void registerInput(String name) {
         inputs.put(name.toUpperCase(), new InputControl());
@@ -55,6 +55,7 @@ public final class Input {
         registerInput("horizontal");
         registerInput("vertical");
         registerInput("escape");
+        registerInput("r");
         
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_D, getControl("horizontal"), 1.0f);
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_A, getControl("horizontal"), -1.0f);
@@ -65,8 +66,9 @@ public final class Input {
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_S, getControl("vertical"), -1.0f);
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_UP, getControl("vertical"), 1.0f);
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_DOWN, getControl("vertical"), -1.0f);
-
+        
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_ESCAPE, getControl("escape"), 1.0f);
+        InputEventHandler.getInstance().addKeyControl(GLFW_KEY_R, getControl("r"), 1.0f);
     }
     
     public static Vector2f getMousePos() {

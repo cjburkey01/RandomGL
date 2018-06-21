@@ -1,6 +1,9 @@
 package com.cjburkey.randomgl;
 
 import static org.lwjgl.opengl.GL11.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.joml.Vector3f;
 import com.cjburkey.randomgl.component.Camera;
 import com.cjburkey.randomgl.component.FreeFly;
 import com.cjburkey.randomgl.component.MeshFilter;
@@ -32,6 +35,9 @@ public final class RandomGL {
     private GameObject testObject;
     private Texture testTexture;
     
+    public static GameObject lightObject;
+    public static Mesh lightMesh;
+    
     private RandomGL(String[] args) {
         this.args = args;
         new InputEventHandler();
@@ -58,6 +64,24 @@ public final class RandomGL {
         setMesh();
         Debug.info("Initialized test mesh");
         
+        lightMesh = new Mesh(testShader);
+        lightMesh.setMesh(new short[] {
+            0, 1, 2,
+        }, new float[][] {
+            new float[] { 0.0f, 0.5f, 0.0f },
+            new float[] { -0.5f, -0.5f, 0.0f },
+            new float[] { 0.5f, -0.5f, 0.0f },
+        }, new float[][] {
+            new float[] { 0.0f, 0.0f, 1.0f },
+            new float[] { 0.0f, 0.0f, 1.0f },
+            new float[] { 0.0f, 0.0f, 1.0f },
+        }, new float[][] {
+            new float[] { 0.0f, 0.0f },
+            new float[] { 0.0f, 0.0f },
+            new float[] { 0.0f, 0.0f },
+        });
+        Debug.info("Initialized light mesh");
+        
         GameObject testCamera = testScene.createObject();
         testCamera.addComponent(new Camera());
         testCamera.addComponent(new FreeFly());
@@ -69,7 +93,12 @@ public final class RandomGL {
         MeshFilter filter = new MeshFilter();
         filter.setMesh(testMesh);
         testObject.addComponent(filter);
-        testObject.transform.position.z = -2.0f;
+        Debug.info("Initialized test object");
+        
+        lightObject = testScene.createObject();
+        MeshFilter ffilter = new MeshFilter();
+        ffilter.setMesh(lightMesh);
+        lightObject.addComponent(ffilter);
         Debug.info("Initialized test object");
         
         testTexture = Texture.createTextureFromFile("res/texture/test.png");
@@ -158,83 +187,111 @@ public final class RandomGL {
     }
     
     private void setMesh() {
-        testMesh.setMesh(new short[] {
-            2, 1, 0,
-            2, 0, 3,
-        }, new float[][] {
-            // Vertices
-            new float[] { 0.5f, 0.5f, 0.0f, },
-            new float[] { 0.5f, -0.5f, 0.0f, },
-            new float[] { -0.5f, -0.5f, 0.0f, },
-            new float[] { -0.5f, 0.5f, 0.0f, },
-        }, new float[][] {
-            // Normals
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-            new float[] { 0.0f, 0.0f, -1.0f },
-        }, new float[][] {
-            // UVs
-            new float[] { 1.0f, 0.0f, },
-            new float[] { 1.0f, 1.0f, },
-            new float[] { 0.0f, 1.0f, },
-            new float[] { 0.0f, 0.0f, },
-        });
-//        testMesh.setMesh(new short[] {
-//            // Back
-//            5, 2, 1,
-//            6, 2, 5,
-//            
-//            // Front
-//            0, 3, 4,
-//            3, 7, 4,
-//            
-//            // Right
-//            3, 2, 7,
-//            7, 2, 6,
-//            
-//            // Left
-//            4, 1, 0,
-//            4, 5, 1,
-//            
-//            // Top
-//            7, 5, 4,
-//            6, 5, 7,
-//            
-//            // Bottom
-//            1, 2, 3,
-//            1, 3, 0,
-//        }, new float[][] {
-//            // Positions of vertices
-//            new float[] { -0.5f, -0.5f, 0.5f, },    // 0
-//            new float[] { -0.5f, -0.5f, -0.5f, },   // 1
-//            new float[] { 0.5f, -0.5f, -0.5f, },    // 2
-//            new float[] { 0.5f, -0.5f, 0.5f, },     // 3
-//            new float[] { -0.5f, 0.5f, 0.5f, },     // 4
-//            new float[] { -0.5f, 0.5f, -0.5f, },    // 5
-//            new float[] { 0.5f, 0.5f, -0.5f, },     // 6
-//            new float[] { 0.5f, 0.5f, 0.5f, },      // 7
-//        }, new float[][] {
-//            // Normals of vertices
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, 0.0f, },
-//        }, new float[][] {
-//            // UVs of vertices
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//            new float[] { 0.0f, 0.0f, },
-//        });
+        List<Short> indices = new ArrayList<>();
+        List<List<Float>> vertices = new ArrayList<>();
+        List<List<Float>> normals = new ArrayList<>();
+        List<List<Float>> texs = new ArrayList<>();
+        
+        createCube(vertices, indices, normals, texs);
+        
+        short[] inds = decodeShort(indices);
+        float[][] verts = decode(vertices);
+        float[][] norms = decode(normals);
+        float[][] uvs = decode(texs);
+        
+        testMesh.setMesh(inds, verts, norms, uvs);
+    }
+    
+    private static void createCube(List<List<Float>> vertices, List<Short> indices, List<List<Float>> normals, List<List<Float>> uvs) {
+        createQuad(new Vector3f(), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), vertices, indices, normals, uvs);
+        createQuad(new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, -1.0f), new Vector3f(1.0f, 0.0f, 0.0f), vertices, indices, normals, uvs);
+        createQuad(new Vector3f(1.0f, 0.0f, -1.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(-1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, -1.0f), vertices, indices, normals, uvs);
+        createQuad(new Vector3f(0.0f, 0.0f, -1.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector3f(-1.0f, 0.0f, 0.0f), vertices, indices, normals, uvs);
+        createQuad(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, -1.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), vertices, indices, normals, uvs);
+        createQuad(new Vector3f(0.0f, 0.0f, -1.0f), new Vector3f(0.0f, 0.0f, 1.0f), new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, -1.0f, 0.0f), vertices, indices, normals, uvs);
+    }
+    
+    private static void createQuad(Vector3f corner, Vector3f up, Vector3f right, Vector3f normal, List<List<Float>> vertices, List<Short> indices, List<List<Float>> normals, List<List<Float>> uvs) {
+        int index = vertices.size();
+        
+        List<Float> verta = new ArrayList<>();
+        List<Float> vertb = new ArrayList<>();
+        List<Float> vertc = new ArrayList<>();
+        List<Float> vertd = new ArrayList<>();
+        // 0
+        verta.add(corner.x);
+        verta.add(corner.y);
+        verta.add(corner.z);
+        // 1
+        vertb.add(corner.x + up.x);
+        vertb.add(corner.y + up.y);
+        vertb.add(corner.z + up.z);
+        // 2
+        vertc.add(corner.x + up.x + right.x);
+        vertc.add(corner.y + up.y + right.y);
+        vertc.add(corner.z + up.z + right.z);
+        // 3
+        vertd.add(corner.x + right.x);
+        vertd.add(corner.y + right.y);
+        vertd.add(corner.z + right.z);
+        
+        vertices.add(verta);
+        vertices.add(vertb);
+        vertices.add(vertc);
+        vertices.add(vertd);
+        
+        for (int i = 0; i < 4; i ++) {
+            List<Float> normala = new ArrayList<>();
+            normala.add(normal.x);
+            normala.add(normal.y);
+            normala.add(normal.z);
+            normals.add(normala);
+        }
+        
+        List<Float> uva = new ArrayList<>();
+        List<Float> uvb = new ArrayList<>();
+        List<Float> uvc = new ArrayList<>();
+        List<Float> uvd = new ArrayList<>();
+        uva.add(0.0f);
+        uva.add(1.0f);
+        uvb.add(0.0f);
+        uvb.add(0.0f);
+        uvc.add(1.0f);
+        uvc.add(0.0f);
+        uvd.add(1.0f);
+        uvd.add(1.0f);
+        uvs.add(uva);
+        uvs.add(uvb);
+        uvs.add(uvc);
+        uvs.add(uvd);
+        
+        indices.add((short) (index + 2));
+        indices.add((short) (index + 1));
+        indices.add((short) (index));
+        indices.add((short) (index));
+        indices.add((short) (index + 3));
+        indices.add((short) (index + 2));
+    }
+    
+    private static float[][] decode(List<List<Float>> input) {
+        if (input.size() < 1) {
+            return new float[0][0];
+        }
+        float[][] a = new float[input.size()][input.get(0).size()];
+        for (int i = 0; i < input.size(); i ++) {
+            for (int j = 0; j < input.get(i).size(); j ++) {
+                a[i][j] = input.get(i).get(j);
+            }
+        }
+        return a;
+    }
+    
+    private static short[] decodeShort(List<Short> input) {
+        short[] out = new short[input.size()];
+        for (int i = 0; i < input.size(); i ++) {
+            out[i] = input.get(i);
+        }
+        return out;
     }
     
     public static float getDeltaTime() {
