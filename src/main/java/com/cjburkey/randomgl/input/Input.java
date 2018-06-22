@@ -56,6 +56,7 @@ public final class Input {
         registerInput("vertical");
         registerInput("escape");
         registerInput("r");
+        registerInput("f");
         
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_D, getControl("horizontal"), 1.0f);
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_A, getControl("horizontal"), -1.0f);
@@ -69,6 +70,7 @@ public final class Input {
         
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_ESCAPE, getControl("escape"), 1.0f);
         InputEventHandler.getInstance().addKeyControl(GLFW_KEY_R, getControl("r"), 1.0f);
+        InputEventHandler.getInstance().addKeyControl(GLFW_KEY_F, getControl("f"), 1.0f);
     }
     
     public static Vector2f getMousePos() {

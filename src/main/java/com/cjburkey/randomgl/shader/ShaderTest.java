@@ -3,15 +3,17 @@ package com.cjburkey.randomgl.shader;
 import org.joml.Vector3f;
 import com.cjburkey.randomgl.RandomGL;
 import com.cjburkey.randomgl.component.Camera;
-import com.cjburkey.randomgl.component.Transform;
+import com.cjburkey.randomgl.component.MeshFilter;
 import com.cjburkey.randomgl.input.Input;
 
+// TODO: MAKE TEXTURED BOOL WORK
 public final class ShaderTest extends ShaderTextured {
     
     private final Vector3f ambientLightColor = new Vector3f(0.1f, 0.1f, 0.1f);
-    private final Vector3f pointLightPos = new Vector3f(2.0f, 0.25f, 5.0f);
-    private final Vector3f pointLightColor = new Vector3f(1.0f, 1.0f, 1.0f);
-    private float specularIntensity = 0.5f;
+    private final Vector3f pointLightPos = new Vector3f(2.0f, 0.5f, 5.0f);
+    private final Vector3f pointLightColor = new Vector3f(0.75f, 0.5f, 0.33f);
+    
+    private final TestMaterial testMaterial = new TestMaterial(0.75f, 16.0f);
     
     public ShaderTest() {
         super(true);
@@ -31,24 +33,28 @@ public final class ShaderTest extends ShaderTextured {
         registerUniform("ambientLightColor");
         registerUniform("pointLightPos");
         registerUniform("pointLightColor");
-        registerUniform("specularIntensity");
         registerUniform("viewPos");
+        registerUniform("material.shininess");
+        registerUniform("material.specularBrightness");
     }
     
-    protected void onSetRenderUniforms(Transform object) {
-        super.onSetRenderUniforms(object);
+    protected void onSetRenderUniforms(MeshFilter mesh) {
+        super.onSetRenderUniforms(mesh);
         
-        pointLightPos.z -= RandomGL.getDeltaTime();
+        if (Input.getAmount("f") <= 0.0f) {
+            pointLightPos.z -= RandomGL.getDeltaTime();
+        }
         if (Input.controlDown("r")) {
-            pointLightPos.set(2.0f, 0.25f, 5.0f);
+            pointLightPos.set(2.0f, 0.5f, 5.0f);
         }
         RandomGL.lightObject.transform.position.set(pointLightPos);
         
         setUniform("ambientLightColor", ambientLightColor);
         setUniform("pointLightPos", pointLightPos);
         setUniform("pointLightColor", pointLightColor);
-        setUniform("specularIntensity", specularIntensity);
         setUniform("viewPos", Camera.getMainCamera().parent.transform.position);
+        setUniform("material.shininess", testMaterial.shininess);
+        setUniform("material.specularBrightness", testMaterial.specularBrightness);
     }
     
 }

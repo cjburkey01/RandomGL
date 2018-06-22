@@ -1,7 +1,7 @@
 package com.cjburkey.randomgl.shader;
 
 import static org.lwjgl.opengl.GL11.*;
-import com.cjburkey.randomgl.component.Transform;
+import com.cjburkey.randomgl.component.MeshFilter;
 
 public abstract class ShaderTextured extends ShaderProgram {
     
@@ -17,7 +17,7 @@ public abstract class ShaderTextured extends ShaderProgram {
         registerUniform("tex");
     }
     
-    protected void onSetRenderUniforms(Transform object) {
+    protected void onSetRenderUniforms(MeshFilter mesh) {
         setUniform("tex", 0);
     }
     

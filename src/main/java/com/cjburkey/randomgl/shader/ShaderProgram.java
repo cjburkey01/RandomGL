@@ -14,6 +14,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import com.cjburkey.randomgl.Attribute;
 import com.cjburkey.randomgl.component.Camera;
+import com.cjburkey.randomgl.component.MeshFilter;
 import com.cjburkey.randomgl.component.Transform;
 import com.cjburkey.randomgl.util.Debug;
 import com.cjburkey.randomgl.util.IOUtil;
@@ -56,13 +57,13 @@ public abstract class ShaderProgram {
     protected abstract void onAddShaders();
     protected abstract void onAddAttributes();
     protected abstract void onRegisterUniforms();
-    protected abstract void onSetRenderUniforms(Transform object);
+    protected abstract void onSetRenderUniforms(MeshFilter mesh);
     
-    public final void setRenderUniforms(Transform object) {
+    public final void setRenderUniforms(MeshFilter mesh) {
         if (transforms) {
-            setTransformationUniforms(object);
+            setTransformationUniforms(mesh.parent.transform);
         }
-        onSetRenderUniforms(object);
+        onSetRenderUniforms(mesh);
     }
     
     protected final boolean addShader(int type, String source) {
@@ -202,6 +203,10 @@ public abstract class ShaderProgram {
         }
         bind();
         glUniform1i(loc, value);
+    }
+    
+    public final void setUniform(String name, boolean value) {
+        setUniform(name, value ? GL_TRUE : GL_FALSE);
     }
     
     public final void setUniform(String name, float value) {

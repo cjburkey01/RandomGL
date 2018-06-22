@@ -1,5 +1,10 @@
 #version 330 core
 
+struct Material {
+    float specularBrightness;
+    float shininess;
+};
+
 in vec3 normal;
 in vec2 uvs;
 in vec3 fragPos;
@@ -10,14 +15,14 @@ out vec4 fragColor;
 uniform sampler2D tex;
 
 // Lighting
+uniform vec3 viewPos;
 uniform vec3 ambientLightColor;
 uniform vec3 pointLightPos;
 uniform vec3 pointLightColor;
-uniform float specularIntensity;
-uniform vec3 viewPos;
+uniform Material material;
 
 void main() {
-    vec4 color = texture(tex, uvs);
+    vec4 diffCol = texture(tex, uvs);
     
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(pointLightPos - fragPos);
@@ -26,10 +31,10 @@ void main() {
     
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256);
-    vec3 specular = specularIntensity * spec * pointLightColor;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = material.specularBrightness * spec * pointLightColor;
     
-    vec3 light = ambientLightColor + diffuse + specular;
+    vec4 light = vec4(ambientLightColor + diffuse + specular, 1.0) * diffCol;
     
-    fragColor = vec4(light, 1.0) * color;
+    fragColor = light;
 }
